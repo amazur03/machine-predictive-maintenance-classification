@@ -1,6 +1,6 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 
 
@@ -12,10 +12,15 @@ class Standarization:
     poprzez obliczanie i zapamietywanie parametrow wylacznie ze zbioru treningowego.
     """
 
+    def __init__(self):
+        # Inicjalizacja atrybutow klasy
+        self.mean = None
+        self.std = None
+
     def fit_transform(self, X):
         """
         Oblicza srednia i odchylenie standardowe dla kazdej kolumny,
-        a nastepnie standaryzuje podane dane (metoda przeznaczona dla zbioru treningowego).
+        a nastepnie standaryzuje podane dane (zbior treningowy).
         """
         self.mean = np.mean(X, axis=0)
         self.std = np.std(X, axis=0)
@@ -28,8 +33,8 @@ class Standarization:
 
     def transform(self, X):
         """
-        Standaryzuje nowe dane (np. zbior testowy) uzywajac sredniej
-        i odchylenia standardowego "nauczonych" wczesniej w metodzie fit_transform().
+        Standaryzuje nowe dane (np. testowe) uzywajac parametrow
+        "nauczonych" wczesniej w metodzie fit_transform().
         """
         return (X - self.mean) / self.std
 
@@ -38,21 +43,25 @@ def plot_confusion(true_labels, predicted_labels, title):
     """
     Generuje i wyswietla macierz pomylek (Confusion Matrix) w formie
     czytelnej mapy cieplnej (heatmap) przy uzyciu biblioteki Seaborn.
-
-    Parametry:
-    - true_labels: Tablica z rzeczywistymi etykietami.
-    - predicted_labels: Tablica z etykietami przewidzianymi przez model.
-    - title: Tytul wykresu (nazwa ewaluowanego algorytmu).
     """
     matrix = confusion_matrix(true_labels, predicted_labels)
 
     plt.figure(figsize=(6, 5))
-    sns.heatmap(matrix, annot=True, fmt='d', cmap='Blues',
-                xticklabels=['Brak awarii', 'Awaria'],
-                yticklabels=['Brak awarii', 'Awaria'])
 
+    # Rysowanie mapy cieplnej
+    sns.heatmap(
+        matrix,
+        annot=True,
+        fmt='d',
+        cmap='Blues',
+        xticklabels=['Brak awarii', 'Awaria'],
+        yticklabels=['Brak awarii', 'Awaria']
+    )
+
+    # Konfiguracja wygladu wykresu
     plt.title(title)
     plt.xlabel("Predykcja")
     plt.ylabel("Rzeczywiste")
     plt.tight_layout()
+
     plt.show()
